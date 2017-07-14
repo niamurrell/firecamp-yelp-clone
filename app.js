@@ -38,6 +38,6 @@ app.get("/campgrounds/new", function(req, res) {
 });
 
 // Run app
-app.listen(3000, function() {
-  console.log("App running on localhost:3000");
+app.listen(4000, function() {
+  console.log("App running on localhost:4000");
 });
