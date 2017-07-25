@@ -1,0 +1,12 @@
+<% include partials/head %>
+<% include partials/nav %>
+
+<h1><%= campground.name %></h1>
+
+<img src="<%= campground.image %>" alt="<%= campground.name %>">
+
+<p>
+  <%= campground.description %>
+</p>
+
+<% include partials/footer %>
