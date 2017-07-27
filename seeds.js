@@ -37,7 +37,7 @@ function seedDb() {
         } else {
           console.log("added a campground");
           Comment.create({
-            text: "Never slept so well in my life!"
+            text: "Never slept so well in my life!",
             author: "Noone Ever"
           }, function(err, comment) {
             if (err) {
@@ -45,7 +45,7 @@ function seedDb() {
             } else {
               campground.comments.push(comment);
               campground.save();
-              console.log("Created new comment.");
+              console.log("Created new comment");
             }
           })
         }

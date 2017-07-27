@@ -12,20 +12,6 @@ app.use(bodyParser.urlencoded({extended: true}));
 mongoose.connect("mongodb://localhost/firecamp", {useMongoClient: true});
 seedDb();
 
-// Temporary Campground Creation
-// Campground.create({
-//   name: "Lagrange Point",
-//   image: "https://www.trend-chaser.com/wp-content/uploads/sites/7/2016/11/featured-image-6.jpg",
-//   description: "Broad valley nestled in the peaceful gulch of the mountain range."
-// }, function(err, campground) {
-//   if(err) {
-//     console.log(err);
-//   } else {
-//     console.log("Newly created campground:");
-//     console.log(campground);
-//   }
-// });
-
 // BEGIN ROUTES
 app.get("/", function(req, res) {
   res.render("landing");
@@ -65,15 +51,15 @@ app.get("/campgrounds/new", function(req, res) {
 
 app.get("/campgrounds/:id", function(req, res) {
   // Find the campground with the given id in database
-  Campground.findById(req.params.id, function(err, resultCampground) {
+  Campground.findById(req.params.id).populate("comments").exec(function(err, resultCampground) {
     if (err) {
       console.log(err);
     } else {
+      console.log(resultCampground);
       // Render SHOW template for that campground
       res.render("show", {campground: resultCampground});
     }
   })
-
 })
 
 // Run app
