@@ -4,6 +4,7 @@ var app = express();
 var bodyParser = require("body-parser");
 var mongoose = require("mongoose");
 var Campground = require("./models/campground");
+var Comment = require("./models/comment");
 var seedDb = require("./seeds");
 
 // Implement node modules
@@ -23,11 +24,9 @@ app.get("/campgrounds", function(req, res) {
     if (err) {
       console.log(err);
     } else {
-      res.render("index", {campgrounds: allCampgrounds});
+      res.render("./campgrounds/index", {campgrounds: allCampgrounds});
     }
   })
-  // This is how to render fixed data:
-  // res.render("campgrounds", {campgrounds: campgrounds});
 });
 
 app.post("/campgrounds", function(req, res) {
@@ -46,7 +45,7 @@ app.post("/campgrounds", function(req, res) {
 });
 
 app.get("/campgrounds/new", function(req, res) {
-  res.render("new");
+  res.render("campgrounds/new");
 });
 
 app.get("/campgrounds/:id", function(req, res) {
@@ -57,7 +56,36 @@ app.get("/campgrounds/:id", function(req, res) {
     } else {
       console.log(resultCampground);
       // Render SHOW template for that campground
-      res.render("show", {campground: resultCampground});
+      res.render("campgrounds/show", {campground: resultCampground});
+    }
+  })
+})
+
+app.get("/campgrounds/:id/comments/new", function(req, res) {
+  Campground.findById(req.params.id, function(err, campground) {
+    if (err) {
+      console.log(err);
+    } else {
+      res.render("comments/new", {campground: campground});
+    }
+  })
+})
+
+app.post("/campgrounds/:id/comments", function (req, res) {
+  Campground.findById(req.params.id, function(err, campground) {
+    if (err) {
+      console.log(err);
+      res.redirect("/campgrounds");
+    } else {
+      Comment.create(req.body.comment, function(err, addedComment) {
+        if (err) {
+          console.log(err);
+        } else {
+          campground.comments.push(addedComment);
+          campground.save();
+          res.redirect("/campgrounds/" + campground._id);
+        }
+      })
     }
   })
 })
