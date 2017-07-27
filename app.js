@@ -1,22 +1,16 @@
 // Require node modules
-var express = require("express"),
-    app = express(),
-    bodyParser = require("body-parser"),
-    mongoose = require("mongoose");
+var express = require("express");
+var app = express();
+var bodyParser = require("body-parser");
+var mongoose = require("mongoose");
+var Campground = require("./models/campground");
+var seedDb = require("./seeds");
 
 // Implement node modules
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
 mongoose.connect("mongodb://localhost/firecamp", {useMongoClient: true});
-
-// Campground Schema & Model Setup
-var campgroundSchema = new mongoose.Schema({
-  name: String,
-  image: String,
-  description: String
-});
-
-var Campground = mongoose.model("Campground", campgroundSchema);
+seedDb();
 
 // Temporary Campground Creation
 // Campground.create({
