@@ -1,0 +1,13 @@
+<% include ./partials/head %>
+<% include ./partials/nav %>
+
+    <h1>Sign Up For FireCamp</h1>
+    <form action="/register" method="post">
+      <label for="username">Username:</label>
+      <input type="text" name="username" placeholder="Username">
+      <label for="password">Password:</label>
+      <input type="password" name="password" placeholder="Password">
+      <input type="submit">
+    </form>
+
+<% include ./partials/footer %>
