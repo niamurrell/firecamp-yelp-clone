@@ -21,7 +21,7 @@
           <p><em>Submitted by <%= campground.author.username %></em></p>
           <% if (currentUser && campground.author.id.equals(currentUser._id)) { %>
             <a href="/campgrounds/<%= campground.id %>/edit" class="btn btn-warning">Edit</a>
-            <form action="/campgrounds/<%= campground.id %>?_method=DELETE" method="POST" id="delete-form">
+            <form action="/campgrounds/<%= campground.id %>?_method=DELETE" method="POST" class="delete-form">
               <button class="btn btn-danger">Delete</button>
             </form>
           <% } %>
@@ -43,6 +43,10 @@
                 <p>
                   <%= comment.text %>
                 </p>
+                <a href="/campgrounds/<%= campground._id %>/comments/<%= comment._id %>/edit" class="btn btn-xs btn-warning">Edit</a>
+                <form action="/campgrounds/<%= campground._id %>/comments/<%= comment._id %>?_method=DELETE" method="POST" class="delete-form">
+                  <button class="btn btn-xs btn-danger">Delete</button>
+                </form>
               </div>
             </div>
           <% }) %>
