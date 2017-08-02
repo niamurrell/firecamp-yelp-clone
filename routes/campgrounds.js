@@ -3,7 +3,7 @@ var router = express.Router();
 var Campground = require("../models/campground.js");
 var Comment = require("../models/comment.js");
 
-// Show All Campgrounds Route
+// Show All Campgrounds - Route
 router.get("/", function(req, res) {
   console.log(req.user);
   // Pull & render database contents:
@@ -16,7 +16,7 @@ router.get("/", function(req, res) {
   })
 });
 
-// Post new campground route
+// Post new campground - route
 router.post("/", isLoggedIn, function(req, res) {
   // Get submitions from form and create a new db document, redirect to page
   var name = req.body.name;
@@ -36,12 +36,12 @@ router.post("/", isLoggedIn, function(req, res) {
   });
 });
 
-// Create new campground route
+// Create new campground - route
 router.get("/new", isLoggedIn, function(req, res) {
   res.render("campgrounds/new");
 });
 
-// Show 1 campground route
+// Show a campground - route
 router.get("/:id", isLoggedIn, function(req, res) {
   // Find the campground with the given id in database
   Campground.findById(req.params.id).populate("comments").exec(function(err, resultCampground) {
@@ -54,6 +54,40 @@ router.get("/:id", isLoggedIn, function(req, res) {
     }
   })
 })
+
+// Edit a campground - route
+router.get("/:id/edit", function(req, res) {
+  Campground.findById(req.params.id, function(err, foundCampground) {
+    if (err) {
+      res.redirect("/campgrounds");
+    } else {
+      res.render("campgrounds/edit", {campground: foundCampground});
+    }
+  })
+})
+
+// Update a campground - route
+router.put("/:id", function(req, res) {
+  Campground.findByIdAndUpdate(req.params.id, req.body.campground, function(err, updatedCampground) {
+    if (err) {
+      res.redirect("/campgrounds");
+    } else {
+      res.redirect("/campgrounds/" + req.params.id)
+    }
+  })
+})
+
+// Destroy a campground - route
+router.delete("/:id", function(req, res) {
+  Campground.findByIdAndRemove(req.params.id, function (err) {
+    if (err) {
+      res.redirect("/campgrounds");
+    } else {
+      res.redirect("/campgrounds");
+    }
+  })
+})
+
 
 function isLoggedIn(req, res, next) {
   if(req.isAuthenticated()) {

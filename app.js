@@ -3,13 +3,17 @@ var express = require("express");
 var app = express();
 var bodyParser = require("body-parser");
 var mongoose = require("mongoose");
-var Campground = require("./models/campground");
-var Comment = require("./models/comment");
-var seedDb = require("./seeds");
 var passport = require("passport");
 var LocalStrategy = require("passport-local");
 var passportLocalMongoose = require("passport-local-mongoose");
+var methodOverride = require("method-override");
+var expressSanitizer = require("express-sanitizer");
+
+// Require models
 var User = require("./models/user");
+var Campground = require("./models/campground");
+var Comment = require("./models/comment");
+var seedDb = require("./seeds");
 
 // Require Routes
 var indexRoutes = require("./routes/index");
@@ -19,6 +23,8 @@ var commentRoutes = require("./routes/comments");
 // Implement node modules
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(expressSanitizer());
+app.use(methodOverride("_method"));
 mongoose.connect("mongodb://localhost/firecamp", {useMongoClient: true});
 app.use(express.static(__dirname + "/public"));
 
