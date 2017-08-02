@@ -39,7 +39,7 @@ app.use(function(req, res, next) {
   next();
 })
 
-seedDb();
+// seedDb();
 
 app.use(indexRoutes);
 app.use("/campgrounds", campgroundRoutes);
