@@ -38,7 +38,7 @@ router.post("/", isLoggedIn, function (req, res) {
 })
 
 // Edit a comment - route
-router.get("/:comment_id/edit", function(req, res) {
+router.get("/:comment_id/edit", checkCommentOwner, function(req, res) {
   Comment.findById(req.params.comment_id, function(err, foundComment) {
     if (err) {
       res.redirect("Back");
@@ -49,7 +49,7 @@ router.get("/:comment_id/edit", function(req, res) {
 })
 
 // Update a comment - route
-router.put("/:comment_id", function(req, res) {
+router.put("/:comment_id", checkCommentOwner, function(req, res) {
   Comment.findByIdAndUpdate(req.params.comment_id, req.body.comment, function(err, updatedComment) {
     if (err) {
       res.redirect("back");
@@ -60,7 +60,7 @@ router.put("/:comment_id", function(req, res) {
 })
 
 // Delete a comment - route
-router.delete("/:comment_id", function(req, res) { 
+router.delete("/:comment_id", checkCommentOwner, function(req, res) { 
   Comment.findByIdAndRemove(req.params.comment_id, function(err) {
     if (err) {
       res.redirect("back");
@@ -76,4 +76,23 @@ function isLoggedIn(req, res, next) {
   }
   res.redirect("/login");
 }
+
+function checkCommentOwner(req, res, next) {
+  if (req.isAuthenticated()) { // is user logged in?
+    Comment.findById(req.params.comment_id, function(err, foundComment) {
+    if (err) {
+      res.redirect("back");
+    } else {
+      if (foundComment.author.id.equals(req.user.id)) {
+        next();
+      } else {
+        res.redirect("back");
+      }
+    }
+  })
+  } else { //if not logged in
+    res.redirect("back");
+  }
+}
+
 module.exports = router;
