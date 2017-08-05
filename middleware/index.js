@@ -3,6 +3,7 @@ var Campground = require("../models/campground");
 var Comment = require("../models/comment");
 
 middlewareObj.checkCampgroundOwner = function(req, res, next) {
+  var redirectTo = req.session.redirectTo ? req.originalUrl : '/campgrounds';
 	  if (req.isAuthenticated()) { // is user logged in?
     Campground.findById(req.params.id, function(err, foundCampground) {
     if (err) {
@@ -12,15 +13,16 @@ middlewareObj.checkCampgroundOwner = function(req, res, next) {
       if (foundCampground.author.id.equals(req.user.id)) {
         // First is an object, second is a string --> MUST USE .equals()
         next();
-      } else {
+      } else { // if not this user's campground
+        delete req.session.redirectTo;
 				req.flash("error", "You don't have permission to do that!");
-        res.redirect("back");
+        res.redirect(redirectTo);
       }
     }
   })
   } else { //if not logged in
 		req.flash("error", "You must be logged in to do that.");
-		res.redirect("back");
+		res.redirect("/login");
   }
 }
 
@@ -39,7 +41,7 @@ middlewareObj.checkCommentOwner = function(req, res, next) {
       }
     }
   })
-	} else { //if not logged in
+  } else { //if not logged in
 		req.flash("error", "You must be logged in to do that.");
     res.redirect("back");
   }
@@ -48,7 +50,8 @@ middlewareObj.checkCommentOwner = function(req, res, next) {
 middlewareObj.isLoggedIn = function(req, res, next) {
   if(req.isAuthenticated()) {
     return next();
-	}
+  }
+  req.session.redirectTo = req.originalUrl;
 	req.flash("error", "You must be logged in to do that.");
   res.redirect("/login");
 }
