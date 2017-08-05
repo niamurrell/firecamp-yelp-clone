@@ -11,3 +11,4 @@ node_modules
 
 # Secret Sauce #
 .env
+public/img/source
