@@ -22,16 +22,20 @@ var campgroundRoutes = require("./routes/campgrounds");
 var commentRoutes = require("./routes/comments");
 
 // Implement node modules
+var nodeEnv = process.env.NODE_ENV || "development";
+if (nodeEnv === "development") {
+  require('dotenv').config()
+}
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(expressSanitizer());
 app.use(methodOverride("_method"));
 app.use(flash());
-mongoose.connect("mongodb://localhost/firecamp", {useMongoClient: true});
+mongoose.connect(process.env.MONGODB_URI, {useMongoClient: true});
 app.use(express.static(__dirname + "/public"));
 
 app.use(require("express-session")({
-  secret: "secret phrase for security",
+  secret: 'process.env.SESSION_SECRET',
   resave: false,
   saveUninitialized: false
 }));
@@ -56,6 +60,7 @@ app.use("/campgrounds", campgroundRoutes);
 app.use("/campgrounds/:id/comments", commentRoutes);
 
 // Run app
-app.listen(4000, function() {
-  console.log("App running on localhost:4000");
+var port = process.env.PORT;
+app.listen(port, function() {
+  console.log("App running on port " + port);
 });
