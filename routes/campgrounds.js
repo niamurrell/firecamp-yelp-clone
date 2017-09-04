@@ -44,14 +44,14 @@ router.get("/new", middleware.isLoggedIn, function(req, res) {
   res.render("campgrounds/new");
 });
 
-// Read a campground - route
+// Show a campground - route
 router.get("/:id", function(req, res) {
   // Find the campground with the given id in database
   Campground.findById(req.params.id).populate("comments").exec(function(err, resultCampground) {
-    if (err) {
-      req.flash("error", "No such campground.");
+    if (err || resultCampground == undefined) {
       console.log(err);
-      res.redirect("/campgrounds");
+      req.flash("error", "That campground does not exist!.");
+      return res.redirect("/campgrounds");
     } else {
       console.log(resultCampground);
       // Render SHOW template for that campground
@@ -63,6 +63,11 @@ router.get("/:id", function(req, res) {
 // Edit a campground - route
 router.get("/:id/edit", middleware.checkCampgroundOwner, function(req, res) {
   Campground.findById(req.params.id, function(err, foundCampground) {
+    if (err || resultCampground == undefined) {
+      console.log(err);
+      req.flash("error", "That campground does not exist!.");
+      return res.redirect("/campgrounds");
+    }
     res.render("campgrounds/edit", {campground: foundCampground});
   })
 });
